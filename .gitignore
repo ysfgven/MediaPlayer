@@ -1,0 +1,30 @@
+# CLion / JetBrains
+.idea/
+*.iml
+
+# Build folders
+cmake-build-*/
+Debug/
+Release/
+
+# Qt auto-generated files
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+
+# Binary / object files
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# OS temp files
+.DS_Store
+Thumbs.db
+
+# User-specific Qt Creator files
+*.pro.user
+*.user
+*.user.*.user
