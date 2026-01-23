@@ -9,6 +9,8 @@ add_executable(MediaPlayerCore
         src/MediaPlayer.cpp
         src/FileScanner.cpp
         include/FileScanner.h
+        src/MediaLibrary.cpp
+        include/MediaLibrary.h
 )
 
 target_include_directories(MediaPlayerCore

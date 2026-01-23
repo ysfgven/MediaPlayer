@@ -4,21 +4,20 @@
 
 #ifndef MEDIAFILE_H
 #define MEDIAFILE_H
-#include <string>
+#include <filesystem>
+
 
 
 class MediaFile {
     private:
-    std::string filePath;
-    std::string fileFormat;
-
+    std::filesystem::path filePath;
 
     public:
     MediaFile() = default;
 
-    std::string getFilePath();
-    void setFilePath(std::string filePath);
-    bool isFileValid();
+    std::filesystem::path getFilePath();
+    void setFilePath(std::filesystem::path filePath);
+    bool isFileValid() const;
 
 
 };

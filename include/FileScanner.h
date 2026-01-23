@@ -12,7 +12,6 @@
 class FileScanner {
 
 private:
-    std::string fileName;
     std::vector<std::filesystem::path> fileList;
 
 public:
