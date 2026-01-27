@@ -22,6 +22,14 @@ void MediaLibrary::loadFromDirectory(const std::filesystem::path& directoryPath)
         }
     }
 }
+int MediaLibrary::sizeOfMediaFiles()  {
+    return mediaFiles.size();
+}
+
+bool MediaLibrary::isDirectoryEmpty() {
+    return mediaFiles.empty();
+}
+
 const std::vector<MediaFile>& MediaLibrary::getMediaFiles() const {
     return mediaFiles;
 }

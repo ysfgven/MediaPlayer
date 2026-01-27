@@ -17,7 +17,8 @@ private:
     const std::vector<MediaFile>& getMediaFiles() const;
     bool empty() const;
     std::size_t size() const;
-
+    int sizeOfMediaFiles();
+    bool isDirectoryEmpty();
 };
 
 
