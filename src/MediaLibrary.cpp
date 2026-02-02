@@ -7,11 +7,8 @@
 void MediaLibrary::loadFromDirectory(const std::filesystem::path& directoryPath) {
     mediaFiles.clear();
 
-    if (!std::filesystem::exists(directoryPath))
-        return;
-
-    if (!std::filesystem::is_directory(directoryPath))
-        return;
+    if (!std::filesystem::exists(directoryPath)) return;
+    if (!std::filesystem::is_directory(directoryPath)) return;
 
     for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
         MediaFile media;
@@ -22,22 +19,17 @@ void MediaLibrary::loadFromDirectory(const std::filesystem::path& directoryPath)
         }
     }
 }
-int MediaLibrary::sizeOfMediaFiles()  {
+
+size_t MediaLibrary::getTrackCount() const {
     return mediaFiles.size();
 }
 
-bool MediaLibrary::isDirectoryEmpty() {
-    return mediaFiles.empty();
-}
-
-const std::vector<MediaFile>& MediaLibrary::getMediaFiles() const {
-    return mediaFiles;
+const MediaFile* MediaLibrary::getTrack(size_t index) const {
+    if (index >= mediaFiles.size())
+        return nullptr;
+    return &mediaFiles[index];
 }
 
 bool MediaLibrary::empty() const {
     return mediaFiles.empty();
-}
-
-std::size_t MediaLibrary::size() const {
-    return mediaFiles.size();
 }

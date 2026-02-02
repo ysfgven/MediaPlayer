@@ -4,28 +4,36 @@
 
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
+
 #include "MediaLibrary.h"
 
-
 class MediaPlayer {
-private:
-
-    enum State {
+public:
+    enum class State {
         Playing,
         Paused,
-        Stopped,
+        Stopped
     };
-    State currentState = State::Stopped;
-    MediaFile* currentMediaFile;
 
-    public:
+private:
+    MediaLibrary* library = nullptr;
+    size_t currentIndex = 0;
+    State currentState = State::Stopped;
+
+public:
+    void setLibrary(MediaLibrary* lib);
+
+    void selectTrack(size_t index);
+    void nextTrack();
+    void previousTrack();
+
     void play();
     void pause();
     void stop();
-    void MediaPlayer::MediaSelect(MediaFile* mediaFile);
 
+    State getState() const;
+    const char* getStateString() const;
 };
 
+#endif
 
-
-#endif //MEDIAPLAYER_H

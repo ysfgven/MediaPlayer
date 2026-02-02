@@ -4,23 +4,23 @@
 
 #ifndef MEDIALIBRARY_H
 #define MEDIALIBRARY_H
-#include <MediaFile.h>
-#include <vector>
 
+#include <vector>
+#include <filesystem>
+#include "MediaFile.h"
 
 class MediaLibrary {
 private:
     std::vector<MediaFile> mediaFiles;
-    public:
-    MediaLibrary();
+
+public:
     void loadFromDirectory(const std::filesystem::path& directoryPath);
-    const std::vector<MediaFile>& getMediaFiles() const;
+
+    size_t getTrackCount() const;
+    const MediaFile* getTrack(size_t index) const;
+
     bool empty() const;
-    std::size_t size() const;
-    int sizeOfMediaFiles();
-    bool isDirectoryEmpty();
 };
 
+#endif
 
-
-#endif //MEDIALIBRARY_H

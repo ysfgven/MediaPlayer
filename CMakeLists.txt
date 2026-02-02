@@ -7,8 +7,6 @@ add_executable(MediaPlayerCore
         main.cpp
         src/MediaFile.cpp
         src/MediaPlayer.cpp
-        src/FileScanner.cpp
-        include/FileScanner.h
         src/MediaLibrary.cpp
         include/MediaLibrary.h
 )
