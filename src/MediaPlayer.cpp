@@ -65,4 +65,10 @@ const char* MediaPlayer::getStateString() const {
     }
 }
 
+const MediaFile* MediaPlayer::getCurrentTrack() const {
+        if (library == nullptr)
+            return nullptr;
+        return library->getTrack(currentIndex);
+}
+
 

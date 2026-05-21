@@ -4,7 +4,6 @@
 
 #include "MediaFile.h"
 
-
 bool MediaFile::isFileValid() const {
     if (filePath.empty())
         return false;
@@ -22,10 +21,31 @@ bool MediaFile::isFileValid() const {
     return true;
 }
 
-std::filesystem::path MediaFile::getFilePath() {
+std::filesystem::path MediaFile::getFilePath() const {
     return filePath;
 }
 
 void MediaFile::setFilePath(std::filesystem::path filePath) {
     this->filePath = filePath;
+}
+
+std::string MediaFile::getTitle() const {
+}
+
+std::string MediaFile::getArtist() const {
+}
+
+int MediaFile::getDuration() const {
+}
+
+void MediaFile::setDuration(int duration) {
+    this -> duration =  duration;
+}
+
+void MediaFile::setTitle(std::string title) {
+    this->title = title;
+}
+
+void MediaFile::setArtist(std::string artist) {
+    this->artist = artist;
 }

@@ -4,6 +4,8 @@
 
 #include "../include/MediaLibrary.h"
 
+#include "MetadataReader.h"
+
 void MediaLibrary::loadFromDirectory(const std::filesystem::path& directoryPath) {
     mediaFiles.clear();
 
@@ -15,6 +17,7 @@ void MediaLibrary::loadFromDirectory(const std::filesystem::path& directoryPath)
         media.setFilePath(entry.path());
 
         if (media.isFileValid()) {
+            MetadataReader::load(media);
             mediaFiles.push_back(media);
         }
     }

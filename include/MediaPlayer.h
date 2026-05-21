@@ -33,6 +33,9 @@ public:
 
     State getState() const;
     const char* getStateString() const;
+
+    const MediaFile* getCurrentTrack() const;
+
 };
 
 #endif
