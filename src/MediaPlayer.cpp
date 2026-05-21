@@ -3,6 +3,7 @@
 //
 
 #include "../include/MediaPlayer.h"
+#include <random>
 
 void MediaPlayer::setLibrary(MediaLibrary* lib) {
     stop();
@@ -20,15 +21,33 @@ void MediaPlayer::selectTrack(size_t index) {
 
 void MediaPlayer::nextTrack() {
     if (!library) return;
-    if (currentIndex + 1 >= library->getTrackCount()) return;
-
     stop();
-    currentIndex++;
+    if (currentPlayMode == PlayMode::Normal) {
+        if (currentIndex +1 >= library->getTrackCount())
+            stop();
+        currentIndex++;
+    }else if (currentPlayMode == PlayMode::RepeatOne) {
+        return;
+    }else if (currentPlayMode == PlayMode::RepeatAll) {
+        currentIndex + 1 >= library->getTrackCount() ? currentIndex = 0 : currentIndex++;
+    }else if (currentPlayMode == PlayMode::Shuffle) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> randBoundries(0,int(library->getTrackCount()-1));
+        currentIndex = randBoundries(gen);
+
+    }
 }
 
 void MediaPlayer::previousTrack() {
     if (!library) return;
-    if (currentIndex == 0) return;
+    if (currentPlayMode == PlayMode::RepeatOne) {
+        return;
+    }
+    if (currentIndex == 0) {
+        stop();
+        return;
+    }
 
     stop();
     currentIndex--;
@@ -38,18 +57,29 @@ void MediaPlayer::play() {
     if (!library) return;
     if (library->getTrack(currentIndex) == nullptr) return;
 
-    if (currentState == State::Stopped || currentState == State::Paused)
+    if (currentState == State::Stopped) {
+        audioEngine.play(getCurrentTrack()->getFilePath());
         currentState = State::Playing;
+    }
+    if ( currentState == State::Paused) {
+        audioEngine.resume();
+        currentState = State::Playing;
+    }
 }
 
 void MediaPlayer::pause() {
-    if (currentState == State::Playing)
+    if (currentState == State::Playing) {
+        audioEngine.pause();
         currentState = State::Paused;
+    }
+
 }
 
 void MediaPlayer::stop() {
-    if (currentState != State::Stopped)
+    if (currentState != State::Stopped) {
+        audioEngine.stop();
         currentState = State::Stopped;
+    }
 }
 
 MediaPlayer::State MediaPlayer::getState() const {

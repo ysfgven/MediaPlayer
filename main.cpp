@@ -1,7 +1,8 @@
 #include <iostream>
 #include "MediaLibrary.h"
 #include "MediaPlayer.h"
-
+#include <thread>
+#include <chrono>
 int main() {
     MediaLibrary library;
     library.loadFromDirectory("C:/Users/yusuf/Desktop/test");
@@ -13,16 +14,10 @@ int main() {
 
     player.selectTrack(0);
     player.play();
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+
     std::cout << "State: " << player.getStateString() << "\n";
 
-    player.pause();
-    std::cout << "State: " << player.getStateString() << "\n";
 
-    player.nextTrack();
-    player.play();
-    std::cout << "State: " << player.getStateString() << "\n";
-
-    player.stop();
-    std::cout << "State: " << player.getStateString() << "\n";
 }
 

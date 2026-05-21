@@ -17,6 +17,8 @@ add_executable(MediaPlayerCore
         include/MediaLibrary.h
         src/MetadataReader.cpp
         "include/MetadataReader.h"
+        include/AudioEngine.h
+        src/AudioEngine.cpp
 )
 
 target_include_directories(MediaPlayerCore

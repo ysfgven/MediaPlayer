@@ -5,6 +5,7 @@
 #ifndef MEDIAPLAYER_H
 #define MEDIAPLAYER_H
 
+#include "AudioEngine.h"
 #include "MediaLibrary.h"
 
 class MediaPlayer {
@@ -14,11 +15,20 @@ public:
         Paused,
         Stopped
     };
+    enum class PlayMode {
+        Normal,
+        Shuffle,
+        RepeatOne,
+        RepeatAll
+
+    };
 
 private:
     MediaLibrary* library = nullptr;
     size_t currentIndex = 0;
     State currentState = State::Stopped;
+    PlayMode currentPlayMode;
+    AudioEngine audioEngine;
 
 public:
     void setLibrary(MediaLibrary* lib);
