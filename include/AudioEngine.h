@@ -5,14 +5,12 @@
 #ifndef AUDIOENGINE_H
 #define AUDIOENGINE_H
 #include <filesystem>
-
+#include <thread>
+#include <atomic>
 #include "miniaudio.h"
 
 class AudioEngine {
-    private:
-    ma_engine engine;
-    ma_sound sound;
-    bool soundInitialized = false;
+
 
     public:
     AudioEngine();
@@ -23,6 +21,14 @@ class AudioEngine {
     void pause();
     void resume();
     void stop();
+
+    private:
+    ma_engine engine;
+    ma_sound sound;
+    ma_sound oldSound;
+    bool soundInitialized = false;
+    bool oldSoundInitialized = false;
+
 
 };
 

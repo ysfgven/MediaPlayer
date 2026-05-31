@@ -27,7 +27,7 @@ private:
     MediaLibrary* library = nullptr;
     size_t currentIndex = 0;
     State currentState = State::Stopped;
-    PlayMode currentPlayMode;
+    PlayMode currentPlayMode = PlayMode::Normal;
     AudioEngine audioEngine;
 
 public:
@@ -45,6 +45,8 @@ public:
     const char* getStateString() const;
 
     const MediaFile* getCurrentTrack() const;
+    void setPlayMode(PlayMode mode);
+    PlayMode getPlayMode() const;
 
 };
 

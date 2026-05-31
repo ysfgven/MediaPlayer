@@ -4,7 +4,6 @@
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
 #include "AudioEngine.h"
-
 AudioEngine::AudioEngine() {
     ma_engine_init(nullptr, &engine);
 
@@ -15,13 +14,20 @@ AudioEngine::~AudioEngine() {
 }
 
 void AudioEngine::play(const std::filesystem::path& path) {
-
-    if (soundInitialized == true)
+    if (soundInitialized) {
+        ma_sound_stop(&sound);
         ma_sound_uninit(&sound);
-    ma_sound_init_from_file(&engine,path.string().c_str(),MA_SOUND_FLAG_STREAM,nullptr,nullptr,&sound);
-    ma_sound_start(&sound);
-    soundInitialized = true;
+        soundInitialized = false;
+    }
+
+    ma_result result = ma_sound_init_from_file(&engine,path.string().c_str(),MA_SOUND_FLAG_STREAM,nullptr, nullptr,&sound);
+
+    if (result == MA_SUCCESS) {
+        ma_sound_start(&sound);
+        soundInitialized = true;
+    }
 }
+
 
 void AudioEngine::pause() {
     ma_sound_stop(&sound);

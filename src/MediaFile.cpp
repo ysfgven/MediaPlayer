@@ -30,12 +30,15 @@ void MediaFile::setFilePath(std::filesystem::path filePath) {
 }
 
 std::string MediaFile::getTitle() const {
+    return title;
 }
 
 std::string MediaFile::getArtist() const {
+    return artist;
 }
 
 int MediaFile::getDuration() const {
+    return duration;
 }
 
 void MediaFile::setDuration(int duration) {

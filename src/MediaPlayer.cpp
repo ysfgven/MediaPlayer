@@ -21,22 +21,31 @@ void MediaPlayer::selectTrack(size_t index) {
 
 void MediaPlayer::nextTrack() {
     if (!library) return;
-    stop();
-    if (currentPlayMode == PlayMode::Normal) {
-        if (currentIndex +1 >= library->getTrackCount())
-            stop();
-        currentIndex++;
-    }else if (currentPlayMode == PlayMode::RepeatOne) {
+
+    if (currentPlayMode == PlayMode::RepeatOne) {
+        stop();
+        play();
         return;
-    }else if (currentPlayMode == PlayMode::RepeatAll) {
+    }
+
+    stop();
+
+    if (currentPlayMode == PlayMode::Normal) {
+        if (currentIndex + 1 >= library->getTrackCount())
+            return;
+        currentIndex++;
+
+    } else if (currentPlayMode == PlayMode::RepeatAll) {
         currentIndex + 1 >= library->getTrackCount() ? currentIndex = 0 : currentIndex++;
-    }else if (currentPlayMode == PlayMode::Shuffle) {
+
+    } else if (currentPlayMode == PlayMode::Shuffle) {
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<int> randBoundries(0,int(library->getTrackCount()-1));
+        std::uniform_int_distribution<int> randBoundries(0, int(library->getTrackCount() - 1));
         currentIndex = randBoundries(gen);
-
     }
+
+    play();
 }
 
 void MediaPlayer::previousTrack() {
@@ -51,20 +60,15 @@ void MediaPlayer::previousTrack() {
 
     stop();
     currentIndex--;
+    play();
 }
 
 void MediaPlayer::play() {
     if (!library) return;
     if (library->getTrack(currentIndex) == nullptr) return;
 
-    if (currentState == State::Stopped) {
-        audioEngine.play(getCurrentTrack()->getFilePath());
-        currentState = State::Playing;
-    }
-    if ( currentState == State::Paused) {
-        audioEngine.resume();
-        currentState = State::Playing;
-    }
+    audioEngine.play(getCurrentTrack()->getFilePath());
+    currentState = State::Playing;
 }
 
 void MediaPlayer::pause() {
@@ -99,6 +103,14 @@ const MediaFile* MediaPlayer::getCurrentTrack() const {
         if (library == nullptr)
             return nullptr;
         return library->getTrack(currentIndex);
+}
+
+void MediaPlayer::setPlayMode(PlayMode mode) {
+    currentPlayMode = mode;
+}
+
+MediaPlayer::PlayMode MediaPlayer::getPlayMode() const {
+    return currentPlayMode;
 }
 
 
