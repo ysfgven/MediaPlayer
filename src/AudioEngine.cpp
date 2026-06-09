@@ -58,3 +58,6 @@ void AudioEngine::seekTo(float seconds) {
     ma_sound_seek_to_pcm_frame(&sound, frame);
 
 }
+bool AudioEngine::isAtEnd() {
+    return ma_sound_at_end(&sound);
+}

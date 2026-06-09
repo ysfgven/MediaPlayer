@@ -43,6 +43,8 @@ class MainWindow : public QMainWindow {
     void setupUI();
     void onVolumeChanged(int value);
     void onProgressChanged();
+    void onTrackClicked(QTreeWidgetItem* item, int column);
+    void onSearchChanged(const QString& text);
 
 
 };

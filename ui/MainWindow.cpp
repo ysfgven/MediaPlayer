@@ -49,14 +49,16 @@ void MainWindow::setupUI() {
     ui.volumeSlider->setValue(volume);
     player.setVolume(volume);
 
+    ui.volumeIcon->setPixmap(QIcon(":/icons/volumeHigh.svg").pixmap(24, 24));
 
 }
+
 void MainWindow::loadLastPath() {
     QSettings settings;
     QString path = settings.value("lastPath", "").toString();
     if (path.isEmpty()) {
         QFileDialog dialog(this);
-        dialog.setWindowTitle("Select muisc folder ");
+        dialog.setWindowTitle("Select music folder ");
         dialog.setFileMode(QFileDialog::Directory);
         dialog.setAcceptMode(QFileDialog::AcceptOpen);
         QString selectedPath = QFileDialog::getExistingDirectory(&dialog);
@@ -74,12 +76,16 @@ void MainWindow::setTreeWidget() {
     ui.treeWidget->setColumnWidth(1, 150); // Singer
     ui.treeWidget->setColumnWidth(2, 80);  // Duration
     ui.treeWidget->setColumnWidth(3, 100); // Size
+    int seconds,min,size;
     for (int i = 0 ;i < library.getTrackCount(); i++) {
+        min = library.getTrack(i)-> getDuration()/60;
+        seconds = library.getTrack(i)-> getDuration()%60;
+        size = std::filesystem::file_size(library.getTrack(i)->getFilePath()) / (1024.0 * 1024.0);
         QTreeWidgetItem* item = new QTreeWidgetItem(ui.treeWidget); //no memory leak here
         item->setText(0, QString::fromStdString(library.getTrack(i)->getTitle()));
         item->setText(1, QString::fromStdString(library.getTrack(i)->getArtist()));
-        item->setText(2,QString::number(library.getTrack(i)->getDuration()));
-        item->setText(3,QString::number(std::filesystem::file_size(library.getTrack(i)->getFilePath())));
+        item->setText(2,QString::number(min) + ":" + QString::number(seconds).rightJustified(2, '0'));
+        item->setText(3, QString::number(size) + " MB");
     }
 }
 
@@ -94,11 +100,27 @@ void MainWindow::setupConnections() {
     connect(progressTimer, &QTimer::timeout, this, &MainWindow::updateProgressBar);
     connect(ui.volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
     connect(ui.progressSlider, &QSlider::sliderMoved, this, &MainWindow::onProgressChanged);
+    connect(ui.treeWidget, &QTreeWidget::itemClicked, this, &MainWindow::onTrackClicked);
+    connect(ui.searchBar, &QLineEdit::textChanged, this, &MainWindow::onSearchChanged);
     ui.progressSlider->installEventFilter(this);
 
 
 
 }
+
+void MainWindow::onSearchChanged(const QString &text) {
+    for (int i = 0; i < ui.treeWidget->topLevelItemCount(); i++){
+        QTreeWidgetItem* item = ui.treeWidget->topLevelItem(i);
+        bool match = item->text(0).contains(text, Qt::CaseInsensitive) || item->text(1).contains(text, Qt::CaseInsensitive);
+        item->setHidden(!match);
+    }
+}
+
+void MainWindow::onTrackClicked(QTreeWidgetItem *item, int column) {
+    player.selectTrack(ui.treeWidget->indexOfTopLevelItem(item));
+    ui.playButton->setIcon(QIcon(":/icons/play.svg"));
+}
+
 void MainWindow::onProgressChanged() {
     if (player.getCurrentTrack() == nullptr) return;
     float seconds = (ui.progressSlider->value() / 100.0f) * player.getCurrentTrack()->getDuration();
@@ -109,6 +131,13 @@ void MainWindow::onVolumeChanged(int value) {
     QSettings settings;
     settings.setValue("volume", value);
     player.setVolume(value);
+
+    if (value == 0)
+        ui.volumeIcon->setPixmap(QIcon(":/icons/mute.svg").pixmap(24, 24));
+    else if (value < 50)
+        ui.volumeIcon->setPixmap(QIcon(":/icons/volumeLow.svg").pixmap(24, 24));
+    else
+        ui.volumeIcon->setPixmap(QIcon(":/icons/volumeHigh.svg").pixmap(24, 24));
 
 }
 
@@ -125,10 +154,13 @@ void MainWindow::onPlayPauseClicked() {
 void MainWindow::onNextClicked() {
     player.nextTrack();
     player.play();
+    ui.playButton->setIcon(QIcon(":/icons/pause.svg"));
 }
 
 void MainWindow::onPreviousClicked() {
     player.previousTrack();
+    player.play();
+    ui.playButton->setIcon(QIcon(":/icons/pause.svg"));
 }
 
 void MainWindow::onPauseClicked() {
@@ -139,6 +171,14 @@ void MainWindow::onShuffleClicked() {
     if (MediaPlayer::PlayMode::Shuffle != player.getPlayMode()) {
         player.setPlayMode(MediaPlayer::PlayMode::Shuffle);
         ui.shuffleButton->setProperty("active", true);
+
+        ui.repeatAllButton->setProperty("active", false);
+        ui.repeatOneButton->setProperty("active", false);
+
+        ui.repeatAllButton->style()->unpolish(ui.repeatAllButton);
+        ui.repeatAllButton->style()->polish(ui.repeatAllButton);
+        ui.repeatOneButton->style()->unpolish(ui.repeatOneButton);
+        ui.repeatOneButton->style()->polish(ui.repeatOneButton);
     } else {
         player.setPlayMode(MediaPlayer::PlayMode::Normal);
         ui.shuffleButton->setProperty("active", false);
@@ -151,6 +191,14 @@ void MainWindow::onRepeatOneClicked() {
     if (MediaPlayer::PlayMode::RepeatOne != player.getPlayMode()) {
         player.setPlayMode(MediaPlayer::PlayMode::RepeatOne);
         ui.repeatOneButton->setProperty("active", true);
+
+        ui.shuffleButton->setProperty("active", false);
+        ui.repeatAllButton->setProperty("active", false);
+
+        ui.repeatAllButton->style()->unpolish(ui.repeatAllButton);
+        ui.repeatAllButton->style()->polish(ui.repeatAllButton);
+        ui.shuffleButton->style()->unpolish(ui.shuffleButton);
+        ui.shuffleButton->style()->polish(ui.shuffleButton);
     }else {
         player.setPlayMode(MediaPlayer::PlayMode::Normal);
         ui.repeatOneButton->setProperty("active", false);
@@ -163,6 +211,15 @@ void MainWindow::onRepeatAllClicked() {
     if (MediaPlayer::PlayMode::RepeatAll != player.getPlayMode()) {
         player.setPlayMode(MediaPlayer::PlayMode::RepeatAll);
         ui.repeatAllButton->setProperty("active", true);
+
+        ui.shuffleButton->setProperty("active", false);
+        ui.repeatOneButton->setProperty("active", false);
+
+        ui.shuffleButton->style()->unpolish(ui.shuffleButton);
+        ui.shuffleButton->style()->polish(ui.shuffleButton);
+        ui.repeatOneButton->style()->unpolish(ui.repeatOneButton);
+        ui.repeatOneButton->style()->polish(ui.repeatOneButton);
+
     }else {
         player.setPlayMode(MediaPlayer::PlayMode::Normal);
         ui.repeatAllButton->setProperty("active", false);
@@ -182,11 +239,14 @@ void MainWindow::updateProgressBar() {
     if (player.getState() == MediaPlayer::State::Playing) {
         int duration = player.getCurrentTrack()->getDuration();
         float position = player.getCurrentPosition();
-        qDebug() << position;
         if (position>0) {
             ui.progressSlider->setValue(position/duration*100);
         }
+        if (player.isAtEnd()) {
+            player.nextTrack();
+        }
     }
+
 
 }
 

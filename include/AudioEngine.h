@@ -24,6 +24,7 @@ class AudioEngine {
     float getCurrentPosition();
     void setVolume(float volume);
     void seekTo(float seconds);
+    bool isAtEnd();
 
     private:
     ma_engine engine;

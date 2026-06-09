@@ -8,6 +8,9 @@
         <file>icons/repeat.svg</file>
         <file>icons/repeatOne.svg</file>
         <file>icons/shuffle.svg</file>
+        <file>icons/volumeLow.svg</file>
+        <file>icons/volumeHigh.svg</file>
+        <file>icons/mute.svg</file>
     </qresource>
 
 </RCC>

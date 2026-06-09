@@ -44,6 +44,8 @@ public:
     void stop();
     void setVolume(float volume);
     void seekTo(float seconds);
+    bool isAtEnd();
+
 
     State getState() const;
     const char* getStateString() const;

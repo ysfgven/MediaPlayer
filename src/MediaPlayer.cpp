@@ -130,3 +130,7 @@ void MediaPlayer::seekTo(float seconds) {
     audioEngine.seekTo(seconds);
 }
 
+bool MediaPlayer::isAtEnd() {
+    return audioEngine.isAtEnd();
+}
+

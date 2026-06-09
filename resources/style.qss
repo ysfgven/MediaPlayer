@@ -73,11 +73,16 @@ QSlider::handle:horizontal {
 }
 
 QLineEdit {
-    background-color: #2d2d2d;
+    background-color: #3d3d3d;
     color: #ffffff;
-    border: none;
+    border: 1px solid #666666;
     border-radius: 6px;
     padding: 4px 8px;
+}
+
+QLineEdit:focus {
+    border: 1px solid #0078d4;
+    background-color: #444444;
 }
 
 QMenuBar {
