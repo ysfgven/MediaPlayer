@@ -7,6 +7,9 @@
 #include "ui_MainWindow.h"
 #include "MediaLibrary.h"
 #include "MediaPlayer.h"
+#include <QTimer>
+#include <QEvent>
+#include <QMouseEvent>
 
 
 
@@ -17,13 +20,17 @@ class MainWindow : public QMainWindow {
     public:
     MainWindow(QWidget* parent = nullptr);
     private:
+    QTimer* progressTimer;
     Ui::MainWindow ui;
     MediaPlayer player;
     MediaLibrary library;
     void setTreeWidget();
     void setupConnections();
+    bool eventFilter(QObject* obj, QEvent* event) override;
+
 
     private slots:
+    void updateProgressBar();
     void onNextClicked();
     void onPreviousClicked();
     void onPauseClicked();
@@ -32,6 +39,10 @@ class MainWindow : public QMainWindow {
     void onRepeatOneClicked();
     void onRepeatAllClicked();
     void onAddPathClicked();
+    void loadLastPath();
+    void setupUI();
+    void onVolumeChanged(int value);
+    void onProgressChanged();
 
 
 };

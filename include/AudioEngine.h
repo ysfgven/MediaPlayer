@@ -21,6 +21,9 @@ class AudioEngine {
     void pause();
     void resume();
     void stop();
+    float getCurrentPosition();
+    void setVolume(float volume);
+    void seekTo(float seconds);
 
     private:
     ma_engine engine;

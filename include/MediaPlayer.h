@@ -30,9 +30,11 @@ private:
     PlayMode currentPlayMode = PlayMode::Normal;
     AudioEngine audioEngine;
 
+
 public:
     void setLibrary(MediaLibrary* lib);
 
+    float getCurrentPosition();
     void selectTrack(size_t index);
     void nextTrack();
     void previousTrack();
@@ -40,6 +42,8 @@ public:
     void play();
     void pause();
     void stop();
+    void setVolume(float volume);
+    void seekTo(float seconds);
 
     State getState() const;
     const char* getStateString() const;

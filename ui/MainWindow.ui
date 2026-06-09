@@ -68,38 +68,18 @@
      </item>
      <item>
       <widget class="QSlider" name="volumeSlider">
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>10</height>
+        </size>
+       </property>
        <property name="orientation">
         <enum>Qt::Orientation::Horizontal</enum>
        </property>
       </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QProgressBar" name="progressBar">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>430</y>
-      <width>801</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>24</number>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="addPathButton">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>390</y>
-      <width>71</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>add path</string>
-    </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
@@ -146,11 +126,19 @@
      </property>
     </column>
    </widget>
-   <zorder>horizontalLayoutWidget</zorder>
-   <zorder>progressBar</zorder>
-   <zorder>horizontalLayoutWidget_2</zorder>
-   <zorder>treeWidget</zorder>
-   <zorder>addPathButton</zorder>
+   <widget class="QSlider" name="progressSlider">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>430</y>
+      <width>801</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Orientation::Horizontal</enum>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -158,17 +146,23 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMedia_Player">
     <property name="title">
      <string>Media Player</string>
     </property>
+    <addaction name="addPathBtn"/>
    </widget>
    <addaction name="menuMedia_Player"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="addPathBtn">
+   <property name="text">
+    <string>Add Path</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

@@ -5,13 +5,67 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include <QFileDialog>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget* parent) :QMainWindow(parent){
     ui.setupUi(this);
+    loadLastPath();
     player.setLibrary(&library);
-    setTreeWidget();
+    progressTimer = new QTimer(this);
+    progressTimer->start(500);
+    setupUI();
     setupConnections();
 };
+
+
+void MainWindow::setupUI() {
+    ui.playButton->setIcon(QIcon(":/icons/play.svg"));
+    ui.playButton->setIconSize(QSize(24, 24));
+    ui.playButton->setText("");
+
+    ui.previousButton->setIcon(QIcon(":/icons/previous.svg"));
+    ui.previousButton->setIconSize(QSize(24, 24));
+    ui.previousButton->setText("");
+
+    ui.nextButton->setIcon(QIcon(":/icons/next.svg"));
+    ui.nextButton->setIconSize(QSize(24, 24));
+    ui.nextButton->setText("");
+
+    ui.repeatAllButton->setIcon(QIcon(":/icons/repeat.svg"));
+    ui.repeatAllButton->setIconSize(QSize(24, 24));
+    ui.repeatAllButton->setText("");
+
+    ui.repeatOneButton->setIcon(QIcon(":/icons/repeatOne.svg"));
+    ui.repeatOneButton->setIconSize(QSize(24, 24));
+    ui.repeatOneButton->setText("");
+
+    ui.shuffleButton->setIcon(QIcon(":/icons/shuffle.svg"));
+    ui.shuffleButton->setIconSize(QSize(24, 24));
+    ui.shuffleButton->setText("");
+    setTreeWidget();
+
+    QSettings settings;
+    int volume = settings.value("volume", 50).toInt();
+    ui.volumeSlider->setValue(volume);
+    player.setVolume(volume);
+
+
+}
+void MainWindow::loadLastPath() {
+    QSettings settings;
+    QString path = settings.value("lastPath", "").toString();
+    if (path.isEmpty()) {
+        QFileDialog dialog(this);
+        dialog.setWindowTitle("Select muisc folder ");
+        dialog.setFileMode(QFileDialog::Directory);
+        dialog.setAcceptMode(QFileDialog::AcceptOpen);
+        QString selectedPath = QFileDialog::getExistingDirectory(&dialog);
+        settings.setValue("lastPath", selectedPath);
+        library.loadFromDirectory(selectedPath.toStdString());
+    }else {
+        library.loadFromDirectory(path.toStdString());
+    }
+}
 
 void MainWindow::setTreeWidget() {
     ui.treeWidget->setRootIsDecorated(false);
@@ -29,7 +83,6 @@ void MainWindow::setTreeWidget() {
     }
 }
 
-
 void MainWindow::setupConnections() {
     connect(ui.previousButton, &QPushButton::clicked, this, &MainWindow::onPreviousClicked);
     connect(ui.nextButton, &QPushButton::clicked, this, &MainWindow::onNextClicked);
@@ -37,19 +90,35 @@ void MainWindow::setupConnections() {
     connect(ui.shuffleButton, &QPushButton::clicked, this, &MainWindow::onShuffleClicked);
     connect(ui.repeatAllButton, &QPushButton::clicked, this, &MainWindow::onRepeatAllClicked);
     connect(ui.repeatOneButton, &QPushButton::clicked, this, &MainWindow::onRepeatOneClicked);
-    connect(ui.addPathButton, &QPushButton::clicked, this, &MainWindow::onAddPathClicked);
+    connect(ui.addPathBtn, &QAction::triggered, this, &MainWindow::onAddPathClicked);
+    connect(progressTimer, &QTimer::timeout, this, &MainWindow::updateProgressBar);
+    connect(ui.volumeSlider, &QSlider::valueChanged, this, &MainWindow::onVolumeChanged);
+    connect(ui.progressSlider, &QSlider::sliderMoved, this, &MainWindow::onProgressChanged);
+    ui.progressSlider->installEventFilter(this);
 
 
+
+}
+void MainWindow::onProgressChanged() {
+    if (player.getCurrentTrack() == nullptr) return;
+    float seconds = (ui.progressSlider->value() / 100.0f) * player.getCurrentTrack()->getDuration();
+    player.seekTo(seconds);
+}
+
+void MainWindow::onVolumeChanged(int value) {
+    QSettings settings;
+    settings.setValue("volume", value);
+    player.setVolume(value);
 
 }
 
 void MainWindow::onPlayPauseClicked() {
     if (player.getState() == MediaPlayer::State::Playing) {
         player.pause();
-        ui.playButton->setText("Play");
+        ui.playButton->setIcon(QIcon(":/icons/play.svg"));
     } else {
         player.play();
-        ui.playButton->setText("Pause");
+        ui.playButton->setIcon(QIcon(":/icons/pause.svg"));
     }
 }
 
@@ -69,25 +138,37 @@ void MainWindow::onPauseClicked() {
 void MainWindow::onShuffleClicked() {
     if (MediaPlayer::PlayMode::Shuffle != player.getPlayMode()) {
         player.setPlayMode(MediaPlayer::PlayMode::Shuffle);
-    }else {
+        ui.shuffleButton->setProperty("active", true);
+    } else {
         player.setPlayMode(MediaPlayer::PlayMode::Normal);
+        ui.shuffleButton->setProperty("active", false);
     }
+    ui.shuffleButton->style()->unpolish(ui.shuffleButton);
+    ui.shuffleButton->style()->polish(ui.shuffleButton);
 }
 
 void MainWindow::onRepeatOneClicked() {
     if (MediaPlayer::PlayMode::RepeatOne != player.getPlayMode()) {
         player.setPlayMode(MediaPlayer::PlayMode::RepeatOne);
+        ui.repeatOneButton->setProperty("active", true);
     }else {
         player.setPlayMode(MediaPlayer::PlayMode::Normal);
+        ui.repeatOneButton->setProperty("active", false);
     }
+    ui.repeatOneButton->style()->unpolish(ui.repeatOneButton);
+    ui.repeatOneButton->style()->polish(ui.repeatOneButton);
 }
 
 void MainWindow::onRepeatAllClicked() {
     if (MediaPlayer::PlayMode::RepeatAll != player.getPlayMode()) {
         player.setPlayMode(MediaPlayer::PlayMode::RepeatAll);
+        ui.repeatAllButton->setProperty("active", true);
     }else {
         player.setPlayMode(MediaPlayer::PlayMode::Normal);
+        ui.repeatAllButton->setProperty("active", false);
     }
+    ui.repeatAllButton->style()->unpolish(ui.repeatAllButton);
+    ui.repeatAllButton->style()->polish(ui.repeatAllButton);
 }
 
 void MainWindow::onAddPathClicked() {
@@ -95,6 +176,30 @@ void MainWindow::onAddPathClicked() {
     player.setLibrary(&library);
     setTreeWidget();
 
+}
+
+void MainWindow::updateProgressBar() {
+    if (player.getState() == MediaPlayer::State::Playing) {
+        int duration = player.getCurrentTrack()->getDuration();
+        float position = player.getCurrentPosition();
+        qDebug() << position;
+        if (position>0) {
+            ui.progressSlider->setValue(position/duration*100);
+        }
+    }
+
+}
+
+bool MainWindow::eventFilter(QObject* obj, QEvent* event) {
+    if (obj == ui.progressSlider && event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+        float ratio = (float)mouseEvent->pos().x() / ui.progressSlider->width();
+        int value = ratio * ui.progressSlider->maximum();
+        ui.progressSlider->setValue(value);
+        onProgressChanged();
+        return true;
+    }
+    return QMainWindow::eventFilter(obj, event);
 }
 
 

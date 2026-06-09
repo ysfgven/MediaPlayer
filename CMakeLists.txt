@@ -26,6 +26,7 @@ add_executable(MediaPlayerCore
         ui/MainWindow.cpp
         ui/MainWindow.h
         ui/MainWindow.ui
+        resources/resources.qrc
 
 )
 

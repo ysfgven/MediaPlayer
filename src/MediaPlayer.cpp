@@ -67,7 +67,11 @@ void MediaPlayer::play() {
     if (!library) return;
     if (library->getTrack(currentIndex) == nullptr) return;
 
-    audioEngine.play(getCurrentTrack()->getFilePath());
+    if (currentState == State::Paused) {
+        audioEngine.resume();
+    } else {
+        audioEngine.play(getCurrentTrack()->getFilePath());
+    }
     currentState = State::Playing;
 }
 
@@ -113,4 +117,16 @@ MediaPlayer::PlayMode MediaPlayer::getPlayMode() const {
     return currentPlayMode;
 }
 
+float MediaPlayer::getCurrentPosition() {
+    return audioEngine.getCurrentPosition();
+}
+
+void MediaPlayer::setVolume(float volume) {
+    audioEngine.setVolume(volume);
+}
+
+
+void MediaPlayer::seekTo(float seconds) {
+    audioEngine.seekTo(seconds);
+}
 
