@@ -20,7 +20,7 @@ The project is structured in three layers:
 - Dynamic volume icon
 - Music library loaded from a user-selected folder, path persisted via `QSettings`
 - Live search/filter by track name or artist
-- UI
+- Clean dark UI built with Qt Designer and QSS
 
 ## Tech Stack
 
@@ -56,6 +56,12 @@ cmake -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake \
 # Build
 cmake --build build
 ```
+
+## Roadmap
+
+- [ ] Null safety improvements
+- [ ] Unit tests 
+- [ ] Support for additional formats 
 
 ## Third Party Libraries
 
