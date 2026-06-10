@@ -2,8 +2,7 @@
 // Created by yusuf on 24.01.2026.
 //
 
-#include "../include/MediaLibrary.h"
-
+#include "MediaLibrary.h"
 #include "MetadataReader.h"
 
 void MediaLibrary::loadFromDirectory(const std::filesystem::path& directoryPath) {

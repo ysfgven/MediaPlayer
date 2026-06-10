@@ -153,19 +153,14 @@ void MainWindow::onPlayPauseClicked() {
 
 void MainWindow::onNextClicked() {
     player.nextTrack();
-    player.play();
     ui.playButton->setIcon(QIcon(":/icons/pause.svg"));
 }
 
 void MainWindow::onPreviousClicked() {
     player.previousTrack();
-    player.play();
     ui.playButton->setIcon(QIcon(":/icons/pause.svg"));
 }
 
-void MainWindow::onPauseClicked() {
-    player.pause();
-}
 
 void MainWindow::onShuffleClicked() {
     if (MediaPlayer::PlayMode::Shuffle != player.getPlayMode()) {

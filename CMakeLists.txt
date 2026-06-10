@@ -36,4 +36,4 @@ target_include_directories(MediaPlayerCore
         PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-target_link_libraries(MediaPlayerCore PRIVATE TagLib::tag Qt6::Core Qt6::Widgets Qt6::Multimedia)
+target_link_libraries(MediaPlayerCore PRIVATE TagLib::tag Qt6::Core Qt6::Widgets)

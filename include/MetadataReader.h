@@ -9,7 +9,6 @@ class MetadataReader {
     public:
     static void load(MediaFile& file);
 
-
 };
 
 

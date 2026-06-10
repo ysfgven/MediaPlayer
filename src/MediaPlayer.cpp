@@ -2,7 +2,7 @@
 // Created by yusuf on 21.01.2026.
 //
 
-#include "../include/MediaPlayer.h"
+#include "MediaPlayer.h"
 #include <random>
 
 void MediaPlayer::setLibrary(MediaLibrary* lib) {

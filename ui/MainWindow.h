@@ -33,7 +33,6 @@ class MainWindow : public QMainWindow {
     void updateProgressBar();
     void onNextClicked();
     void onPreviousClicked();
-    void onPauseClicked();
     void onPlayPauseClicked();
     void onShuffleClicked();
     void onRepeatOneClicked();

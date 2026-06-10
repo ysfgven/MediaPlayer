@@ -29,10 +29,7 @@ class AudioEngine {
     private:
     ma_engine engine;
     ma_sound sound;
-    ma_sound oldSound;
     bool soundInitialized = false;
-    bool oldSoundInitialized = false;
-
 
 };
 
